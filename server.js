@@ -1,3 +1,5 @@
+const connection = require('./connection');
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -23,46 +25,58 @@ const writeData = (data) => {
 };
 
 // Routes
-app.get('/api/products', (req, res) => {
-  const products = readData();
-  res.json(products);
-});
+app.get('/produtos', (req, res) => {
+    connection.query('SELECT * FROM Produtos', (err, results) => {
+      if (err) {
+        res.status(500).send('Erro ao buscar produtos');
+      } else {
+        res.json(results);
+      }
+    });
+  });
 
-app.post('/api/products', (req, res) => {
-  const products = readData();
-  const newProduct = { id: Date.now(), ...req.body };
-  products.push(newProduct);
-  writeData(products);
-  res.status(201).json(newProduct);
-});
+  app.post('/produtos', (req, res) => {
+    const { nome, descricao, preco } = req.body;
+    const query = 'INSERT INTO Produtos (nome, descricao, preco, data_de_criacao) VALUES (?, ?, ?, NOW())';
+    connection.query(query, [nome, descricao, preco], (err, results) => {
+      if (err) {
+        res.status(500).send('Erro ao adicionar produto');
+      } else {
+        res.status(201).send('Produto adicionado com sucesso');
+      }
+    });
+  });
 
-app.put('/api/products/:id', (req, res) => {
-  const products = readData();
-  const { id } = req.params;
-  const index = products.findIndex(p => p.id == id);
+  app.put('/produtos/:id', (req, res) => {
+    const { id } = req.params;
+    const { nome, descricao, preco } = req.body;
+    const query = 'UPDATE Produtos SET nome = ?, descricao = ?, preco = ? WHERE id = ?';
+    connection.query(query, [nome, descricao, preco, id], (err, results) => {
+      if (err) {
+        res.status(500).send('Erro ao atualizar produto');
+      } else if (results.affectedRows === 0) {
+        res.status(404).send('Produto não encontrado');
+      } else {
+        res.send('Produto atualizado com sucesso');
+      }
+    });
+  });
+  
+  // Endpoint para deletar um produto
+  app.delete('/produtos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM Produtos WHERE id = ?';
+    connection.query(query, [id], (err, results) => {
+      if (err) {
+        res.status(500).send('Erro ao deletar produto');
+      } else if (results.affectedRows === 0) {
+        res.status(404).send('Produto não encontrado');
+      } else {
+        res.send('Produto deletado com sucesso');
+      }
+    });
+  });
 
-  if (index !== -1) {
-    products[index] = { id: parseInt(id), ...req.body };
-    writeData(products);
-    res.json(products[index]);
-  } else {
-    res.status(404).json({ message: 'Product not found' });
-  }
-});
-
-app.delete('/api/products/:id', (req, res) => {
-  let products = readData();
-  const { id } = req.params;
-  const initialLength = products.length;
-  products = products.filter(p => p.id != id);
-
-  if (products.length < initialLength) {
-    writeData(products);
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: 'Product not found' });
-  }
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

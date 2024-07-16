@@ -1,15 +1,50 @@
-[  {
-    "id": 1,
-    "name": "Product 1",
-    "price": 10.0
+[
+  {
+    "id": 1720995430179,
+    "name": "Camisa do Internacional",
+    "description": "Vermelha",
+    "price": "42"
   },
   {
-    "id": 2,
-    "name": "Product 2",
-    "price": 20.0
+    "id": 1720997746713,
+    "name": "Pro",
+    "description": "1",
+    "price": "222"
   },
   {
-    "id": 3,
-    "name": "Product 3",
-    "price": 30.0
-  }]
+    "id": 1721006000338,
+    "name": "Tenis",
+    "description": "Branco",
+    "price": "2000"
+  },
+  {
+    "id": 1721006257021,
+    "name": "Roupa",
+    "description": "preto",
+    "price": "200"
+  },
+  {
+    "id": 1721010188309,
+    "name": "Telefone",
+    "description": "Rose",
+    "price": "2000"
+  },
+  {
+    "id": 1721010250214,
+    "name": "Bota",
+    "description": "Couro",
+    "price": "1000"
+  },
+  {
+    "id": 1721011906058,
+    "name": "Colar",
+    "description": "Prata",
+    "price": "1250"
+  },
+  {
+    "id": 1721085316681,
+    "name": "Moto",
+    "description": "cg 160",
+    "price": "12700"
+  }
+]
